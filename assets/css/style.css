@@ -443,3 +443,28 @@ li { margin-bottom: .35em; }
 /* Fiches pratiques sur fond blanc (accueil) : cartes teintées + filet terre cuite */
 .news-section .post-body { background: var(--panel); border: 0; border-top: 3px solid var(--accent); box-shadow: 0 22px 44px -22px rgba(17,17,17,.35); }
 .news-section .post:hover .post-body { background: #E9E5E0; }
+
+/* Parcours : domaines en liste compacte sur 2 colonnes */
+.parcours-tags { list-style: none; padding: 0; margin: 4px 0 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px; }
+.parcours-tags li { margin: 0; padding-left: 18px; position: relative; font-size: .93rem; color: var(--black); }
+.parcours-tags li::before { content: ""; position: absolute; left: 0; top: .8em; width: 9px; height: 2px; background: var(--accent); }
+@media (max-width: 520px) { .parcours-tags { grid-template-columns: 1fr; } }
+
+/* ---------- Pied de page clair ---------- */
+.site-footer { background: var(--panel); color: var(--text); }
+.footer-mark { color: rgba(17,17,17,.04); }
+.footer-head, .footer-bottom { border-color: rgba(17,17,17,.12); }
+.footer-id .logo { color: var(--accent); }
+.footer-sign { opacity: 1; }
+.footer-phone { color: var(--black); }
+.footer-phone:hover { color: var(--accent); }
+.footer-mail { color: var(--text); }
+.footer-mail:hover { color: var(--accent); }
+.footer-cols h4 { color: var(--accent); }
+.footer-cols p { color: var(--muted); }
+.footer-cols a { color: var(--text); }
+.footer-cols a:hover { color: var(--accent); }
+.footer-zone { color: var(--muted); }
+.footer-bottom { color: var(--muted); }
+.footer-bottom a, .footer-bottom button { color: var(--muted); }
+.footer-bottom a:hover, .footer-bottom button:hover { color: var(--black); }
