@@ -451,9 +451,8 @@ li { margin-bottom: .35em; }
 @media (max-width: 520px) { .parcours-tags { grid-template-columns: 1fr; } .parcours-tags li { white-space: normal; } }
 
 /* ---------- Pied de page clair ---------- */
-.site-footer { background: #F5EAE4; color: var(--text); }
-.footer-head, .footer-bottom { border-color: rgba(150,67,44,.18) !important; }
-.footer-mark { color: rgba(184,85,58,.07); }
+.site-footer { background: var(--panel); color: var(--text); }
+.footer-mark { color: rgba(17,17,17,.04); }
 .footer-head, .footer-bottom { border-color: rgba(17,17,17,.12); }
 .footer-id .logo { color: var(--accent); }
 .footer-sign { opacity: 1; }
