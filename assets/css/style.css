@@ -306,9 +306,14 @@ li { margin-bottom: .35em; }
 .todo { background: #FFF1B8; color: #5A4300; padding: 0 .3em; border-radius: 3px; font-weight: 500; }
 
 /* ---------- Contact ---------- */
-.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(30px, 6vw, 90px); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: stretch; }
+.contact-card { background: var(--panel); border-radius: var(--r); padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; }
+.contact-title { font-size: 1.55rem; margin-bottom: 1.1em; }
+.contact-card .btn-row { margin-bottom: 26px; }
+.contact-card .map { flex: 1; min-height: 240px; aspect-ratio: auto; background: #fff; }
+.contact-card .form { flex: 1; }
 @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } }
-.contact-lines { list-style: none; padding: 0; margin: 0 0 30px; }
+.contact-lines { list-style: none; padding: 0; margin: 0 0 26px; }
 .contact-lines li { margin: 0 0 18px; }
 .contact-lines span { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
 .contact-lines a { color: var(--black); text-decoration: none; font-size: 1.1rem; }

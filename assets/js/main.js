@@ -11,6 +11,11 @@
 var SITE_CONFIG = {
   CALENDLY_URL: "https://calendly.com/VOTRE-COMPTE/consultation-initiale",
   GTM_ID: "GTM-XXXXXXX",
+  // Fiche Google du cabinet (Place ID) et clé « Maps Embed API » (gratuite, à créer dans Google Cloud).
+  // Sans clé, la carte est affichée à partir de l'adresse.
+  MAPS_PLACE_ID: "ChIJOaXjF5weEEgRL9tEUxrMHTk",
+  MAPS_EMBED_KEY: "",
+  MAPS_ADDRESS: "3 rue Autissier, 56000 Vannes",
   CONSENT_KEY: "yq_consent_v1",
   CONSENT_DAYS: 180
 };
@@ -215,9 +220,12 @@ gtag("consent", "default", {
   $$("[data-load-map]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var box = btn.closest(".map");
-      var q = encodeURIComponent(btn.getAttribute("data-load-map"));
-      box.innerHTML = '<iframe title="Plan d\'accès au cabinet" loading="lazy" referrerpolicy="no-referrer-when-downgrade" ' +
-        'src="https://www.google.com/maps?q=' + q + '&output=embed"></iframe>';
+      var src = SITE_CONFIG.MAPS_EMBED_KEY
+        ? "https://www.google.com/maps/embed/v1/place?key=" + encodeURIComponent(SITE_CONFIG.MAPS_EMBED_KEY) +
+          "&q=place_id:" + encodeURIComponent(SITE_CONFIG.MAPS_PLACE_ID) + "&language=fr"
+        : "https://www.google.com/maps?q=" + encodeURIComponent(SITE_CONFIG.MAPS_ADDRESS) + "&output=embed&hl=fr";
+      box.innerHTML = '<iframe title="Plan d\'accès au cabinet" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="' + src + '"></iframe>';
+      window.dataLayer.push({ event: "ouverture_carte" });
     });
   });
 
