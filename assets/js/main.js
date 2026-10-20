@@ -51,6 +51,11 @@ gtag("consent", "default", {
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+  // Masqué quand le pied de page est visible (il ne doit rien recouvrir)
+  var footer = $(".site-footer");
+  if (floatCta && footer && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (en) { floatCta.classList.toggle("is-hidden", en[0].isIntersecting); }).observe(footer);
+  }
 
   /* ---------- Sommaire « Sur cette page » (pages longues) ---------- */
   var toc = $(".toc");
