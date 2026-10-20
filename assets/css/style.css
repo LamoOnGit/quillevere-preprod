@@ -54,7 +54,13 @@ li { margin-bottom: .35em; }
 .section { padding: clamp(56px, 7.5vw, 104px) 0; }
 .section:not(.panel) + .section:not(.panel) { padding-top: clamp(16px, 3vw, 40px); }
 .panel { margin: var(--frame); border-radius: var(--r); background: var(--panel); }
-.panel--dark { background: var(--black); color: #fff; }
+.panel--dark { background: #161616; color: rgba(255,255,255,.8); }
+.panel--dark h2 { color: #fff; }
+.panel--dark h2 em { color: #E07A5F; }
+.panel--dark .label { color: #E07A5F; }
+.panel--dark .news > div:first-child p { color: rgba(255,255,255,.72); }
+.panel--dark .post-body { border: 0; box-shadow: 0 20px 40px -20px rgba(0,0,0,.6); }
+.panel--dark .post-img { box-shadow: none; }
 
 /* ---------- Boutons (pilules) ---------- */
 .btn {
