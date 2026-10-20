@@ -208,6 +208,10 @@ li { margin-bottom: .35em; }
 .intro-text p { max-width: 60ch; }
 .intro-text .btn-row { margin-top: 28px; align-items: center; justify-content: space-between; }
 .intro-sign { width: clamp(170px, 20vw, 230px); height: auto; }
+.intro-text > .intro-sign { margin-top: 10px; }
+.parcours-list { margin: 0 0 1.4rem; }
+.plain-list.parcours-list li { padding: 10px 0 10px 24px; position: relative; }
+.plain-list.parcours-list li::before { content: ""; position: absolute; left: 0; top: calc(10px + .85em); width: 10px; height: 1px; background: var(--accent); }
 @media (max-width: 860px) { .intro { grid-template-columns: 1fr; } .intro-photo { aspect-ratio: 4 / 3; } .intro-text p { text-align: left; } }
 
 /* ---------- Expertises : cartes photo ---------- */
@@ -436,3 +440,7 @@ li { margin-bottom: .35em; }
   .reveal { opacity: 1; transform: none; transition: none; }
   * { transition-duration: .01ms !important; }
 }
+
+/* Page Le cabinet : texte long, photo alignée en haut et qui suit le défilement */
+.intro--long { align-items: start; }
+@media (min-width: 861px) { .intro--long .intro-photo { position: sticky; top: 120px; } }
