@@ -3,12 +3,16 @@
    ========================================================= */
 
 /* ---- RÉGLAGES À COMPLÉTER ------------------------------------------
-   CALENDLY_URL : lien de l'événement Calendly « Consultation initiale »
-                  (paiement Stripe activé dans Calendly).
+   BOOKING_PROVIDER : "cal" (Cal.com, gratuit) ou "calendly".
+   CAL_LINK     : identifiant de l'événement Cal.com, ex. "yann-quillevere/consultation-initiale"
+                  (paiement Stripe activé dans l'événement, agenda Google connecté).
+   CALENDLY_URL : lien de l'événement si l'on utilise Calendly à la place.
    GTM_ID       : identifiant Google Tag Manager (fourni par V. Maisonneuve).
    Tant que GTM_ID vaut "GTM-XXXXXXX", aucun traceur n'est chargé.
 --------------------------------------------------------------------- */
 var SITE_CONFIG = {
+  BOOKING_PROVIDER: "cal",
+  CAL_LINK: "VOTRE-COMPTE/consultation-initiale",
   CALENDLY_URL: "https://calendly.com/VOTRE-COMPTE/consultation-initiale",
   GTM_ID: "GTM-XXXXXXX",
   // Fiche Google du cabinet (Place ID) et clé « Maps Embed API » (gratuite, à créer dans Google Cloud).
@@ -190,36 +194,47 @@ gtag("consent", "default", {
     b.addEventListener("click", function () { showBanner(); });
   });
 
-  /* ---------- Calendly (chargé au clic : aucun cookie tiers avant) ---------- */
+  /* ---------- Agenda de réservation (chargé au clic : aucun cookie tiers avant) ---------- */
+  var bookingDone = function () { window.dataLayer.push({ event: "rdv_reserve_paye" }); };
+
+  function loadCal(box) {
+    box.innerHTML = '<div id="cal-inline" style="width:100%;height:100%;min-height:640px;overflow:auto"></div>';
+    /* Code d'intégration officiel Cal.com */
+    (function (C, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = C.document; C.Cal = C.Cal || function () { var cal = C.Cal; var ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }; var namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", { origin: "https://cal.com" });
+    Cal("inline", { elementOrSelector: "#cal-inline", calLink: SITE_CONFIG.CAL_LINK, layout: "month_view", config: { theme: "light" } });
+    Cal("ui", { theme: "light", styles: { branding: { brandColor: "#B8553A" } }, hideEventTypeDetails: false, layout: "month_view" });
+    Cal("on", { action: "bookingSuccessfulV2", callback: bookingDone });
+    Cal("on", { action: "bookingSuccessful", callback: bookingDone });
+  }
+
   function loadCalendly(box) {
     var url = SITE_CONFIG.CALENDLY_URL + (SITE_CONFIG.CALENDLY_URL.indexOf("?") > -1 ? "&" : "?") +
-      "hide_gdpr_banner=1&locale=fr&primary_color=9e4a33";
+      "hide_gdpr_banner=1&locale=fr&primary_color=b8553a";
     box.innerHTML = '<div class="calendly-inline-widget" data-url="' + url + '"></div>';
     var s = doc.createElement("script");
     s.src = "https://assets.calendly.com/assets/external/widget.js";
     s.async = true;
     doc.body.appendChild(s);
-    window.dataLayer.push({ event: "ouverture_agenda" });
+    window.addEventListener("message", function (e) {
+      if (e.origin === "https://calendly.com" && e.data && e.data.event === "calendly.event_scheduled") bookingDone();
+    });
   }
-  $$("[data-load-calendly]").forEach(function (btn) {
+
+  $$("[data-load-booking]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      var box = doc.getElementById(btn.getAttribute("data-load-calendly"));
-      if (box) loadCalendly(box);
+      var box = doc.getElementById(btn.getAttribute("data-load-booking"));
+      if (!box) return;
+      box.classList.add("is-loaded");
+      if (SITE_CONFIG.BOOKING_PROVIDER === "calendly") loadCalendly(box); else loadCal(box);
+      window.dataLayer.push({ event: "ouverture_agenda" });
     });
   });
   // Lien direct « #reserver » : on ouvre l'agenda automatiquement
   if (location.hash === "#reserver") {
-    var autoBtn = $("[data-load-calendly]");
+    var autoBtn = $("[data-load-booking]");
     if (autoBtn) autoBtn.click();
   }
-
-  // Événements renvoyés par Calendly → conversion Google Ads
-  window.addEventListener("message", function (e) {
-    if (e.origin !== "https://calendly.com" || !e.data || !e.data.event) return;
-    if (e.data.event === "calendly.event_scheduled") {
-      window.dataLayer.push({ event: "rdv_reserve_paye" });
-    }
-  });
 
   /* ---------- Carte Google (chargée au clic) ---------- */
   $$("[data-load-map]").forEach(function (btn) {

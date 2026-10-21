@@ -468,3 +468,6 @@ li { margin-bottom: .35em; }
 .footer-bottom { color: var(--muted); }
 .footer-bottom a, .footer-bottom button { color: var(--muted); }
 .footer-bottom a:hover, .footer-bottom button:hover { color: var(--black); }
+
+.booking.is-loaded { min-height: 680px; }
+.booking #cal-inline { padding: 8px; }
