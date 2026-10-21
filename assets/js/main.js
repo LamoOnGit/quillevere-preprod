@@ -257,3 +257,78 @@ gtag("consent", "default", {
     });
   }
 })();
+
+/* =========================================================
+   Confort de navigation : filtres, tableaux, sommaire, pied de page
+   ========================================================= */
+(function () {
+  "use strict";
+  var doc = document;
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
+
+  /* ---- Filtre des fiches pratiques par catégorie (#construction, #immobilier…) ---- */
+  var chips = $$(".chip[data-filter]");
+  if (chips.length) {
+    var posts = $$("#fiches-list .post");
+    var empty = doc.querySelector(".filters-empty");
+    var apply = function (cat, updateHash) {
+      if (!chips.some(function (c) { return c.getAttribute("data-filter") === cat; })) cat = "all";
+      var shown = 0;
+      posts.forEach(function (p) {
+        var ok = cat === "all" || p.getAttribute("data-cat") === cat;
+        p.classList.toggle("is-hidden", !ok);
+        if (ok) { shown++; p.classList.add("is-in"); }
+      });
+      chips.forEach(function (c) {
+        var on = c.getAttribute("data-filter") === cat;
+        c.classList.toggle("is-active", on);
+        c.setAttribute("aria-pressed", String(on));
+      });
+      if (empty) empty.hidden = shown > 0;
+      if (updateHash) history.replaceState(null, "", cat === "all" ? location.pathname : "#" + cat);
+    };
+    chips.forEach(function (c) {
+      c.addEventListener("click", function () { apply(c.getAttribute("data-filter"), true); });
+    });
+    apply(location.hash.slice(1) || "all", false);
+  }
+
+  /* ---- Tableaux : libellés de colonnes pour l'affichage en cartes sur mobile ---- */
+  $$(".prose table").forEach(function (t) {
+    var heads = $$("thead th", t).map(function (th) { return th.textContent.trim(); });
+    $$("tbody tr", t).forEach(function (tr) {
+      $$("td", tr).forEach(function (td, i) { if (heads[i]) td.setAttribute("data-label", heads[i]); });
+    });
+  });
+
+  /* ---- Sommaire repliable en haut des pages longues (mobile / tablette) ---- */
+  var prose = doc.querySelector(".layout-aside .prose");
+  var titles = prose ? $$("h2", prose) : [];
+  if (prose && titles.length > 2) {
+    var d = doc.createElement("details");
+    d.className = "toc-mobile";
+    var html = "<summary>Sur cette page</summary><ol>";
+    titles.forEach(function (h, i) {
+      if (!h.id) h.id = "partie-" + (i + 1);
+      html += '<li><a href="#' + h.id + '"></a></li>';
+    });
+    d.innerHTML = html + "</ol>";
+    $$("a", d).forEach(function (a, i) { a.textContent = titles[i].textContent.replace(/\s+/g, " ").trim(); });
+    d.addEventListener("click", function (e) { if (e.target.tagName === "A") d.open = false; });
+    prose.insertBefore(d, prose.firstChild);
+  }
+
+  /* ---- Pied de page : colonnes repliables sur mobile ---- */
+  $$(".footer-cols .is-collapsible h4").forEach(function (h) {
+    h.setAttribute("role", "button");
+    h.setAttribute("tabindex", "0");
+    var toggle = function () {
+      if (window.innerWidth > 560) return;
+      var col = h.parentElement;
+      col.classList.toggle("is-open");
+      h.setAttribute("aria-expanded", String(col.classList.contains("is-open")));
+    };
+    h.addEventListener("click", toggle);
+    h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+  });
+})();

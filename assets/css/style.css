@@ -14,7 +14,6 @@
   --line: #E0DDD8;
 
   --sans: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --serif: "Playfair Display", Georgia, serif;
 
   --r: 22px;
   --frame: 10px;
@@ -361,7 +360,7 @@ li { margin-bottom: .35em; }
 .footer-id .logo strong { font-size: 1.7rem; }
 .footer-sign { width: clamp(170px, 18vw, 240px); height: auto; opacity: .92; margin-top: 8px; }
 .footer-contact { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-.footer-phone { font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 500; color: #fff; text-decoration: none; letter-spacing: .01em; line-height: 1.1; }
+.footer-phone { font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 500; color: #fff; text-decoration: none; letter-spacing: .01em; line-height: 1.1; padding: 6px 0; }
 .footer-phone:hover { color: #E07A5F; }
 .footer-mail { color: rgba(255,255,255,.72); text-decoration: none; }
 .footer-mail:hover { color: #fff; }
@@ -471,3 +470,102 @@ li { margin-bottom: .35em; }
 
 .booking.is-loaded { min-height: 680px; }
 .booking #cal-inline { padding: 8px; }
+
+/* Chiffres clés (présentation de l'accueil) */
+.key-facts { list-style: none; padding: 0; margin: 26px 0 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.key-facts li { margin: 0; background: #fff; border-radius: 14px; padding: 16px 16px 14px; border-top: 3px solid var(--accent); }
+.key-facts strong { display: block; font-size: 1.35rem; font-weight: 600; color: var(--black); line-height: 1.15; }
+.key-facts span { display: block; margin-top: 6px; font-size: .84rem; line-height: 1.4; color: var(--muted); }
+@media (max-width: 560px) { .key-facts { grid-template-columns: 1fr; } .key-facts li { display: flex; align-items: baseline; gap: 12px; padding: 12px 16px; } .key-facts span { margin: 0; } }
+
+/* =========================================================
+   Fiches pratiques : cartes alignées, filtres, fiches liées
+   ========================================================= */
+.news-cards { align-items: stretch; }
+.post { display: flex; flex-direction: column; }
+.post-body { flex: 1; display: flex; flex-direction: column; }
+.post-body p { flex: 1; }
+.post-tag { font-size: .8rem; }
+.post-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(17,17,17,.08); font-size: .8rem; color: var(--muted); }
+.post-foot span::before { content: "◷ "; color: var(--accent); }
+.post:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.post.is-hidden { display: none; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: clamp(26px, 4vw, 40px); }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font: 400 .9rem/1 var(--sans); color: var(--black); cursor: pointer; transition: background .2s, color .2s, border-color .2s; min-height: 44px; }
+.chip span { font-size: .75rem; background: var(--panel); border-radius: 999px; padding: 3px 8px; color: var(--muted); }
+.chip:hover { border-color: var(--accent); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip.is-active span { background: rgba(255,255,255,.22); color: #fff; }
+.filters-empty { text-align: center; color: var(--muted); padding: 30px 0; }
+
+.related .news-cards { margin-top: 0; }
+.related-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: clamp(26px, 4vw, 40px); }
+.related-head h2 { margin: 0; font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.related .post-body { background: var(--panel); border: 0; border-top: 3px solid var(--accent); }
+
+/* =========================================================
+   Confort mobile / tablette
+   ========================================================= */
+
+/* Expertises : défilement horizontal (swipe) sous 1000 px */
+@media (max-width: 1000px) {
+  .exp-cards { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, 46%); grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 12px; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); scrollbar-width: thin; }
+  .exp-card { scroll-snap-align: start; aspect-ratio: 3 / 4; }
+  .exp-hint { display: block; }
+}
+@media (max-width: 700px) { .exp-cards { grid-auto-columns: 80%; } .exp-card { aspect-ratio: 4 / 5; } }
+.exp-hint { display: none; font-size: .82rem; color: var(--muted); margin-top: 6px; }
+
+/* Tableau des garanties : cartes empilées sur mobile */
+@media (max-width: 640px) {
+  .prose table, .prose tbody, .prose tr, .prose td { display: block; width: 100%; }
+  .prose thead { display: none; }
+  .prose tr { background: var(--panel); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; }
+  .prose td { border: 0; padding: 4px 0; }
+  .prose td::before { content: attr(data-label); display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .prose td:first-child { font-weight: 600; color: var(--black); font-size: 1.02rem; }
+  .prose td:first-child::before { display: none; }
+}
+
+/* Sommaire repliable en haut des pages longues (mobile/tablette) */
+.toc-mobile { display: none; margin: 0 0 28px; background: var(--panel); border-radius: 14px; }
+.toc-mobile summary { list-style: none; cursor: pointer; padding: 15px 18px; font-weight: 500; color: var(--black); display: flex; justify-content: space-between; align-items: center; min-height: 48px; }
+.toc-mobile summary::-webkit-details-marker { display: none; }
+.toc-mobile summary::after { content: "+"; color: var(--accent); font-size: 1.4rem; line-height: 1; transition: transform .2s; }
+.toc-mobile[open] summary::after { transform: rotate(45deg); }
+.toc-mobile ol { list-style: none; margin: 0; padding: 0 18px 14px; }
+.toc-mobile li { margin: 0; border-top: 1px solid var(--line); }
+.toc-mobile a { display: block; padding: 11px 0; color: var(--text); text-decoration: none; font-size: .95rem; }
+@media (max-width: 960px) { .toc-mobile { display: block; } .aside-sticky .toc { display: none; } }
+
+/* Pied de page compact sur mobile : colonnes repliables */
+@media (max-width: 560px) {
+  .footer-cols { gap: 0; }
+  .footer-cols > div { border-top: 1px solid rgba(17,17,17,.1); padding: 4px 0; }
+  .footer-cols > div:first-child { border-top: 0; padding-bottom: 16px; }
+  .footer-cols .is-collapsible h4 { display: flex; justify-content: space-between; align-items: center; margin: 0; min-height: 48px; cursor: pointer; }
+  .footer-cols .is-collapsible h4::after { content: "+"; font-size: 1.3rem; letter-spacing: 0; transition: transform .2s; }
+  .footer-cols .is-collapsible.is-open h4::after { transform: rotate(45deg); }
+  .footer-cols .is-collapsible ul { display: none; padding-bottom: 12px; }
+  .footer-cols .is-collapsible.is-open ul { display: block; }
+}
+
+/* Zones cliquables confortables sur mobile (44 px recommandés) */
+@media (max-width: 760px) {
+  .footer-cols a, .footer-bottom a, .footer-bottom button, .footer-mail { display: inline-block; padding: 9px 0; }
+  .footer-cols li { margin: 0; }
+  .aside-links a, .sub a { padding-top: 12px; padding-bottom: 12px; }
+  .contact-lines a { display: inline-block; padding: 6px 0; }
+}
+
+/* Carte (page contact) : boutons de même largeur, empilés proprement */
+.map .btn-row { flex-direction: column; align-items: stretch; max-width: 280px; margin: 0 auto; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (max-width: 640px) {
+  .filters { flex-wrap: nowrap; overflow-x: auto; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); padding-bottom: 6px; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .chip { flex: none; }
+}
+.map p { font-size: .82rem; }
