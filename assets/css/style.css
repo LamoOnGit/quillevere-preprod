@@ -573,3 +573,8 @@ li { margin-bottom: .35em; }
 /* Contact : voile allégé pour garder le ciel bleu de la mairie de Vannes */
 .page-hero--sky::before { background: linear-gradient(90deg, rgba(10,20,35,.62) 0%, rgba(10,20,35,.28) 50%, rgba(10,20,35,0) 80%), linear-gradient(180deg, rgba(10,20,35,0) 40%, rgba(10,20,35,.35) 100%); }
 @media (max-width: 700px) { .page-hero--sky::before { background: linear-gradient(180deg, rgba(10,20,35,.05) 0%, rgba(10,20,35,.45) 45%, rgba(10,20,35,.7) 100%); } }
+
+/* Encadrés « À retenir » des articles (citation Markdown) */
+.prose blockquote { margin: 2em 0; padding: 22px 26px; background: var(--panel); border-radius: 14px; border-left: 3px solid var(--accent); }
+.prose blockquote p:last-child { margin: 0; }
+.prose img { border-radius: 14px; margin: 1.5em 0; }

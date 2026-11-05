@@ -1,0 +1,64 @@
+# Configuration de l'espace /admin (Sveltia CMS)
+backend:
+  name: github
+  repo: LamoOnGit/site-quillevere
+  branch: main
+  commit_messages:
+    create: "Fiche pratique : création de « {{slug}} »"
+    update: "Fiche pratique : mise à jour de « {{slug}} »"
+    delete: "Fiche pratique : suppression de « {{slug}} »"
+    uploadMedia: "Image : ajout de {{path}}"
+    deleteMedia: "Image : suppression de {{path}}"
+
+logo_url: ../assets/img/favicon.svg
+site_url: https://lamoongit.github.io/quillevere-preprod/
+
+media_folder: assets/img
+public_folder: assets/img
+media_libraries:
+  default:
+    config:
+      slugify_filename: true
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  - name: fiches
+    label: Fiches pratiques
+    label_singular: Fiche pratique
+    description: "Articles affichés sur l'accueil, la page Fiches pratiques et en « fiches liées »."
+    folder: src/fiches
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: "{{title}}"
+    identifier_field: title
+    summary: "{{title}} — {{date}}"
+    sortable_fields: [date, title, category]
+    view_filters:
+      - { label: Droit de la construction, field: category, pattern: construction }
+      - { label: Droit de l'immobilier, field: category, pattern: immobilier }
+      - { label: Assurance construction, field: category, pattern: assurance }
+      - { label: Brouillons, field: draft, pattern: true }
+    fields:
+      - { name: title, label: Titre, widget: string, hint: "Titre affiché sur la fiche et sur les cartes." }
+      - { name: excerpt, label: Résumé, widget: text, hint: "1 à 2 phrases, affichées sur la carte de la fiche." }
+      - name: category
+        label: Catégorie
+        widget: select
+        options:
+          - { label: Droit de la construction, value: construction }
+          - { label: Droit de l'immobilier, value: immobilier }
+          - { label: Assurance construction, value: assurance }
+      - { name: tag, label: Étiquette, widget: string, hint: "Petit mot au-dessus du titre, ex. « Bail commercial »." }
+      - { name: date, label: Date de publication, widget: datetime, time_format: false, date_format: "DD/MM/YYYY", format: "YYYY-MM-DD" }
+      - { name: image, label: Image de la carte, widget: image, hint: "Format paysage, au moins 1 000 px de large." }
+      - { name: image_alt, label: Description de l'image, widget: string, required: false, hint: "Pour l'accessibilité et Google, ex. « Fissure sur une façade »." }
+      - { name: hero_image, label: Image du bandeau, widget: image, required: false, hint: "Grande image en haut de la fiche. Si vide, l'image de la carte est utilisée." }
+      - { name: body, label: Contenu, widget: markdown, hint: "Utilisez « Titre 2 » pour les intertitres : ils alimentent le sommaire. Une citation devient un encadré « À retenir »." }
+      - { name: seo_title, label: Titre pour Google, widget: string, required: false, hint: "Facultatif. 60 caractères maximum." }
+      - { name: description, label: Description pour Google, widget: text, required: false, hint: "Facultatif. 155 caractères maximum. Sinon le résumé est utilisé." }
+      - { name: draft, label: Brouillon (non publié), widget: boolean, default: false, required: false }
