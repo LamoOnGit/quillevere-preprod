@@ -569,3 +569,7 @@ li { margin-bottom: .35em; }
   .chip { flex: none; }
 }
 .map p { font-size: .82rem; }
+
+/* Contact : voile allégé pour garder le ciel bleu de la mairie de Vannes */
+.page-hero--sky::before { background: linear-gradient(90deg, rgba(10,20,35,.62) 0%, rgba(10,20,35,.28) 50%, rgba(10,20,35,0) 80%), linear-gradient(180deg, rgba(10,20,35,0) 40%, rgba(10,20,35,.35) 100%); }
+@media (max-width: 700px) { .page-hero--sky::before { background: linear-gradient(180deg, rgba(10,20,35,.05) 0%, rgba(10,20,35,.45) 45%, rgba(10,20,35,.7) 100%); } }
