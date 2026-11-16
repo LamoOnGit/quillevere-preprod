@@ -12,7 +12,7 @@
 --------------------------------------------------------------------- */
 var SITE_CONFIG = {
   BOOKING_PROVIDER: "cal",
-  CAL_LINK: "VOTRE-COMPTE/consultation-initiale",
+  CAL_LINK: "yannquillevere/consultation-initiale",
   CALENDLY_URL: "https://calendly.com/VOTRE-COMPTE/consultation-initiale",
   GTM_ID: "GTM-XXXXXXX",
   // Fiche Google du cabinet (Place ID) et clé « Maps Embed API » (gratuite, à créer dans Google Cloud).
