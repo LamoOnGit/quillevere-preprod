@@ -578,3 +578,6 @@ li { margin-bottom: .35em; }
 .prose blockquote { margin: 2em 0; padding: 22px 26px; background: var(--panel); border-radius: 14px; border-left: 3px solid var(--accent); }
 .prose blockquote p:last-child { margin: 0; }
 .prose img { border-radius: 14px; margin: 1.5em 0; }
+.form-status { margin: 0; font-size: .9rem; min-height: 1em; }
+.form-status.is-error { color: #B3261E; }
+.form button[disabled] { opacity: .7; cursor: wait; }

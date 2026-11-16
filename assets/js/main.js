@@ -252,8 +252,31 @@ gtag("consent", "default", {
   /* ---------- Formulaire de contact ---------- */
   var form = $("#contact-form");
   if (form) {
-    form.addEventListener("submit", function () {
-      window.dataLayer.push({ event: "formulaire_contact_envoye" });
+    // Envoi sans quitter la page, puis redirection vers merci.html
+    form.addEventListener("submit", function (e) {
+      if (!window.fetch || !window.FormData) return; // envoi classique en secours
+      e.preventDefault();
+      var btn = form.querySelector('button[type="submit"]');
+      var status = form.querySelector(".form-status");
+      var label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Envoi en cours…";
+      if (status) { status.textContent = ""; status.classList.remove("is-error"); }
+      fetch(form.action, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return r.ok && j.success !== false; }); })
+        .then(function (ok) {
+          if (!ok) throw new Error("refus");
+          window.dataLayer.push({ event: "formulaire_contact_envoye" });
+          location.href = "merci.html";
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = label;
+          if (status) {
+            status.classList.add("is-error");
+            status.innerHTML = "L'envoi n'a pas abouti. Réessayez, ou contactez le cabinet au <a href=\"tel:+33679660622\">06 79 66 06 22</a>.";
+          }
+        });
     });
   }
 })();
