@@ -249,9 +249,10 @@ gtag("consent", "default", {
     });
   });
 
-  /* ---------- Formulaire de contact ---------- */
-  var form = $("#contact-form");
-  if (form) {
+  /* ---------- Formulaires (contact et « Être rappelé ») ---------- */
+  $$("#contact-form, form.js-web3").forEach(function (form) {
+    var source = form.querySelector(".js-page-source");
+    if (source) source.value = document.title;
     // Envoi sans quitter la page, puis redirection vers merci.html
     form.addEventListener("submit", function (e) {
       if (!window.fetch || !window.FormData) return; // envoi classique en secours
@@ -266,19 +267,19 @@ gtag("consent", "default", {
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return r.ok && j.success !== false; }); })
         .then(function (ok) {
           if (!ok) throw new Error("refus");
-          window.dataLayer.push({ event: "formulaire_contact_envoye" });
-          location.href = "merci.html";
+          window.dataLayer.push({ event: "formulaire_contact_envoye", formulaire: form.id || "rappel", page: location.pathname });
+          location.href = form.getAttribute("data-thanks") || "merci.html";
         })
         .catch(function () {
           btn.disabled = false;
           btn.textContent = label;
           if (status) {
             status.classList.add("is-error");
-            status.innerHTML = "L'envoi n'a pas abouti. Réessayez, ou contactez le cabinet au <a href=\"tel:+33679660622\">06 79 66 06 22</a>.";
+            status.innerHTML = "L'envoi n'a pas abouti. Réessayez, ou appelez le cabinet au <a href=\"tel:+33679660622\">06 79 66 06 22</a>.";
           }
         });
     });
-  }
+  });
 })();
 
 /* =========================================================
