@@ -36,7 +36,7 @@ gtag("consent", "default", {
   wait_for_update: 500
 });
 
-(function () {
+function initSite() {
   "use strict";
 
   var doc = document;
@@ -81,7 +81,8 @@ gtag("consent", "default", {
       links.forEach(function (a, i) { a.classList.toggle("is-current", i === current); });
     };
     window.addEventListener("scroll", mark, { passive: true });
-    mark();
+    // Calcul différé : il ne doit pas retarder le premier affichage
+    (window.requestIdleCallback || function (f) { setTimeout(f, 200); })(mark);
   }
 
   /* ---------- Menu mobile ---------- */
@@ -280,12 +281,14 @@ gtag("consent", "default", {
         });
     });
   });
-})();
+}
+// Initialisation après le premier affichage (ne bloque pas le rendu)
+if (document.readyState === "complete") initSite(); else window.addEventListener("load", initSite);
 
 /* =========================================================
    Confort de navigation : filtres, tableaux, sommaire, pied de page
    ========================================================= */
-(function () {
+(window.requestIdleCallback || function (f) { setTimeout(f, 1); })(function () {
   "use strict";
   var doc = document;
   var $$ = function (s, c) { return Array.prototype.slice.call((c || doc).querySelectorAll(s)); };
@@ -355,4 +358,4 @@ gtag("consent", "default", {
     h.addEventListener("click", toggle);
     h.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
   });
-})();
+});
