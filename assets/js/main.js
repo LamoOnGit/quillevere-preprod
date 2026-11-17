@@ -342,7 +342,7 @@ gtag("consent", "default", {
   }
 
   /* ---- Pied de page : colonnes repliables sur mobile ---- */
-  $$(".footer-cols .is-collapsible h4").forEach(function (h) {
+  $$(".footer-cols .is-collapsible .footer-title").forEach(function (h) {
     h.setAttribute("role", "button");
     h.setAttribute("tabindex", "0");
     var toggle = function () {

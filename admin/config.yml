@@ -58,6 +58,7 @@ collections:
       - { name: image, label: Image de la carte, widget: image, hint: "Format paysage, au moins 1 000 px de large." }
       - { name: image_alt, label: Description de l'image, widget: string, required: false, hint: "Pour l'accessibilité et Google, ex. « Fissure sur une façade »." }
       - { name: hero_image, label: Image du bandeau, widget: image, required: false, hint: "Grande image en haut de la fiche. Si vide, l'image de la carte est utilisée." }
+      - { name: hero_alt, label: Description de l'image du bandeau, widget: string, required: false, hint: "Pour Google Images et l'accessibilité. Si vide, la description de l'image de la carte est utilisée." }
       - { name: body, label: Contenu, widget: markdown, hint: "Utilisez « Titre 2 » pour les intertitres : ils alimentent le sommaire. Une citation devient un encadré « À retenir »." }
       - { name: seo_title, label: Titre pour Google, widget: string, required: false, hint: "Facultatif. 60 caractères maximum." }
       - { name: description, label: Description pour Google, widget: text, required: false, hint: "Facultatif. 155 caractères maximum. Sinon le résumé est utilisé." }
