@@ -7,14 +7,12 @@
    CAL_LINK     : identifiant de l'événement Cal.com, ex. "yann-quillevere/consultation-initiale"
                   (paiement Stripe activé dans l'événement, agenda Google connecté).
    CALENDLY_URL : lien de l'événement si l'on utilise Calendly à la place.
-   GTM_ID       : identifiant Google Tag Manager (fourni par V. Maisonneuve).
-   Tant que GTM_ID vaut "GTM-XXXXXXX", aucun traceur n'est chargé.
+   GTM          : l'identifiant du conteneur se règle dans build.py (GTM_ID).
 --------------------------------------------------------------------- */
 var SITE_CONFIG = {
   BOOKING_PROVIDER: "cal",
   CAL_LINK: "yannquillevere/consultation-initiale",
   CALENDLY_URL: "https://calendly.com/VOTRE-COMPTE/consultation-initiale",
-  GTM_ID: "GTM-XXXXXXX",
   // Fiche Google du cabinet (Place ID) et clé « Maps Embed API » (gratuite, à créer dans Google Cloud).
   // Sans clé, la carte est affichée à partir de l'adresse.
   MAPS_PLACE_ID: "ChIJOaXjF5weEEgRL9tEUxrMHTk",
@@ -25,16 +23,8 @@ var SITE_CONFIG = {
 };
 
 window.dataLayer = window.dataLayer || [];
+/* Le consentement par défaut et le chargement de GTM sont dans le <head> (src/layout.html). */
 function gtag() { window.dataLayer.push(arguments); }
-
-/* Consent Mode v2 : tout est refusé par défaut */
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
 
 function initSite() {
   "use strict";
@@ -66,7 +56,7 @@ function initSite() {
   var titles = $$(".prose h2");
   if (toc && titles.length > 2) {
     var list = $("ol", toc);
-    titles.forEach(function (h, i) {
+    if (!list.children.length) titles.forEach(function (h, i) {
       if (!h.id) h.id = "partie-" + (i + 1);
       var li = doc.createElement("li");
       li.innerHTML = '<a href="#' + h.id + '"></a>';
@@ -157,24 +147,25 @@ function initSite() {
     }
   };
 
-  var gtmLoaded = false;
-  function loadGTM() {
-    var id = SITE_CONFIG.GTM_ID;
-    if (gtmLoaded || !id || id.indexOf("XXXX") > -1) return;
-    gtmLoaded = true;
-    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-    var s = doc.createElement("script");
-    s.async = true;
-    s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(id);
-    doc.head.appendChild(s);
-  }
+  function loadGTM() { if (window.yqLoadGTM) window.yqLoadGTM(); }
 
   function applyConsent(c) {
     var v = c === "granted" ? "granted" : "denied";
     gtag("consent", "update", {
       ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v
     });
-    if (v === "granted") loadGTM();
+    if (v === "granted") { loadGTM(); upgradeMap(); }
+  }
+  /* Carte : OpenStreetMap par défaut (aucun cookie, affichée d'office) ;
+     Google Maps à la place si le visiteur a accepté les cookies */
+  function upgradeMap() {
+    $$("[data-map-google]:not([data-map-google=done])").forEach(function (f) {
+      f.setAttribute("data-map-google", "done");
+      f.src = SITE_CONFIG.MAPS_EMBED_KEY
+        ? "https://www.google.com/maps/embed/v1/place?key=" + encodeURIComponent(SITE_CONFIG.MAPS_EMBED_KEY) +
+          "&q=place_id:" + encodeURIComponent(SITE_CONFIG.MAPS_PLACE_ID) + "&language=fr"
+        : "https://www.google.com/maps?q=" + encodeURIComponent(SITE_CONFIG.MAPS_ADDRESS) + "&output=embed&hl=fr";
+    });
   }
 
   function showBanner() { if (banner) banner.classList.add("is-visible"); }
@@ -196,7 +187,11 @@ function initSite() {
   });
 
   /* ---------- Agenda de réservation (chargé au clic : aucun cookie tiers avant) ---------- */
-  var bookingDone = function () { window.dataLayer.push({ event: "rdv_reserve_paye" }); };
+  var bookingDone = function (e) {
+    var d = (e && e.detail && e.detail.data) || {};
+    var uid = d.uid || (d.booking && d.booking.uid) || d.bookingUid || "";
+    if (window.yqCountBooking) window.yqCountBooking(uid);
+  };
 
   function loadCal(box) {
     box.innerHTML = '<div id="cal-inline" style="width:100%;height:100%;min-height:640px;overflow:auto"></div>';
@@ -237,17 +232,9 @@ function initSite() {
     if (autoBtn) autoBtn.click();
   }
 
-  /* ---------- Carte Google (chargée au clic) ---------- */
-  $$("[data-load-map]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var box = btn.closest(".map");
-      var src = SITE_CONFIG.MAPS_EMBED_KEY
-        ? "https://www.google.com/maps/embed/v1/place?key=" + encodeURIComponent(SITE_CONFIG.MAPS_EMBED_KEY) +
-          "&q=place_id:" + encodeURIComponent(SITE_CONFIG.MAPS_PLACE_ID) + "&language=fr"
-        : "https://www.google.com/maps?q=" + encodeURIComponent(SITE_CONFIG.MAPS_ADDRESS) + "&output=embed&hl=fr";
-      box.innerHTML = '<iframe title="Plan d\'accès au cabinet" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="' + src + '"></iframe>';
-      window.dataLayer.push({ event: "ouverture_carte" });
-    });
+  /* ---------- Carte : clic vers Google Maps (mesure) ---------- */
+  $$("[data-track-map]").forEach(function (a) {
+    a.addEventListener("click", function () { window.dataLayer.push({ event: "ouverture_carte" }); });
   });
 
   /* ---------- Formulaires (contact et « Être rappelé ») ---------- */
@@ -331,7 +318,9 @@ if (document.readyState === "complete") initSite(); else window.addEventListener
   /* ---- Sommaire repliable en haut des pages longues (mobile / tablette) ---- */
   var prose = doc.querySelector(".layout-aside .prose");
   var titles = prose ? $$("h2", prose) : [];
-  if (prose && titles.length > 2) {
+  var built = doc.querySelector(".toc-mobile");  // écrit par build.py
+  if (built) built.addEventListener("click", function (e) { if (e.target.tagName === "A") built.open = false; });
+  if (prose && titles.length > 2 && !built) {
     var d = doc.createElement("details");
     d.className = "toc-mobile";
     var html = "<summary>Sur cette page</summary><ol>";

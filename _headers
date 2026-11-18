@@ -1,4 +1,5 @@
-# En-têtes HTTP (Netlify) : sécurité + cache longue durée des fichiers statiques
+# En-têtes HTTP (Netlify / Cloudflare Pages) : sécurité + cache longue durée des fichiers statiques.
+# Images (?v=empreinte) et script (?v=empreinte) changent d'adresse quand leur contenu change : cache d'un an sans risque.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -10,4 +11,6 @@
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 /assets/js/*
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=31536000, immutable
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
